@@ -29,3 +29,11 @@ task run(type: JavaExec) {
     main = 'Main'
     classpath = sourceSets.main.runtimeClasspath
 }
+
+task generateJni(type: Exec) {
+    // These should be variable
+    ext.class = 'Native'
+    ext.output = 'jni'
+
+    commandLine 'javah', '-cp', sourceSets.main.runtimeClasspath.asPath, '-d', ext.output, ext.class
+}

@@ -5,5 +5,8 @@
 /build
 .gradle
 
+# Ignore generated header files
+jni/*.h
+
 # Operating system generated objects
 .DS_Store

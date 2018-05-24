@@ -30,7 +30,8 @@ task run(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
 }
 
-def JNI_DIR = 'jni'
+def JNI_DIR = "${projectDir}/jni"
+def JNI_BUILD_OUPUT = "${JNI_DIR}/build"
 def JNI_JAVA_HOME = '/Library/Java/JavaVirtualMachines/jdk1.8.0_171.jdk/Contents/Home'
 
 task generateJni(type: Exec) {
@@ -42,20 +43,14 @@ task generateJni(type: Exec) {
 }
 
 task buildJni(type: Exec) {
-    ext.dir = JNI_DIR
-    ext.jvmHome = JNI_JAVA_HOME
-    ext.output = "${projectDir}/${ext.dir}/build"
-    
-    environment 'JVM_HOME', ext.jvmHome
-    environment 'OUTPUT', ext.output
+    environment 'JVM_HOME', JNI_JAVA_HOME
+    environment 'OUTPUT', JNI_BUILD_OUPUT
 
-    commandLine 'make', '-C', ext.dir
+    commandLine 'make', '-C', JNI_DIR
 }
 
 task cleanJni(type: Exec) {
-    ext.dir = JNI_DIR
-    
-    commandLine 'make', '-C', ext.dir, 'clean'
+    commandLine 'make', '-C', JNI_DIR, 'clean'
 }
 
 // Add the 'hooks' to execute the JNI commands with normal gradle commands

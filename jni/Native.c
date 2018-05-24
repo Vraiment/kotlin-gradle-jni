@@ -1,7 +1,7 @@
 #include "Native.h"
 
 JNIEXPORT void JNICALL Java_Native_sayHello(JNIEnv *env, jclass obj) {
-    printf("Hello world\n");
+    printf("Hello world from C\n");
 }
 
 JNIEXPORT void JNICALL Java_Native_sendANum(JNIEnv *env, jclass obj, jint arg) {

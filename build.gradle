@@ -57,3 +57,7 @@ task cleanJni(type: Exec) {
     
     commandLine 'make', '-C', ext.dir, 'clean'
 }
+
+// Add the 'hooks' to execute the JNI commands with normal gradle commands
+build.finalizedBy buildJni
+clean.dependsOn cleanJni

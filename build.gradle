@@ -30,10 +30,30 @@ task run(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
 }
 
+def JNI_DIR = 'jni'
+def JNI_JAVA_HOME = '/Library/Java/JavaVirtualMachines/jdk1.8.0_171.jdk/Contents/Home'
+
 task generateJni(type: Exec) {
     // These should be variable
     ext.class = 'Native'
-    ext.output = 'jni'
+    ext.output = JNI_DIR
 
     commandLine 'javah', '-cp', sourceSets.main.runtimeClasspath.asPath, '-d', ext.output, ext.class
+}
+
+task buildJni(type: Exec) {
+    ext.dir = JNI_DIR
+    ext.jvmHome = JNI_JAVA_HOME
+    ext.output = "${projectDir}/${ext.dir}/build"
+    
+    environment 'JVM_HOME', ext.jvmHome
+    environment 'OUTPUT', ext.output
+
+    commandLine 'make', '-C', ext.dir
+}
+
+task cleanJni(type: Exec) {
+    ext.dir = JNI_DIR
+    
+    commandLine 'make', '-C', ext.dir, 'clean'
 }

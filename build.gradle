@@ -3,14 +3,19 @@ buildscript {
 
     repositories {
         mavenCentral()
+        maven {
+            url 'https://plugins.gradle.org/m2/'
+        }
     }
 
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "gradle.plugin.com.vraiment.gradle:jni:0.2.2"
     }
 }
 
 apply plugin: 'kotlin'
+apply plugin: 'com.vraiment.gradle.jni'
 
 repositories {
     mavenCentral()
@@ -24,40 +29,6 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 }
 
-def JNI_DIR = "${projectDir}/jni"
-def JNI_BUILD_OUPUT = "${JNI_DIR}/build"
-def JNI_JAVA_HOME = '/Library/Java/JavaVirtualMachines/jdk1.8.0_171.jdk/Contents/Home'
-
-task generateJni(type: Exec) {
-    // These should be variable
-    ext.class = 'Native'
-    ext.output = JNI_DIR
-
-    commandLine 'javah', '-cp', sourceSets.main.runtimeClasspath.asPath, '-d', ext.output, ext.class
-}
-
-task buildJni(type: Exec) {
-    environment 'JVM_HOME', JNI_JAVA_HOME
-    environment 'OUTPUT', JNI_BUILD_OUPUT
-
-    commandLine 'make', '-C', JNI_DIR
-}
-
-task cleanJni(type: Exec) {
-    commandLine 'make', '-C', JNI_DIR, 'clean'
-}
-
-// Add the 'hooks' to execute the JNI commands with normal gradle commands
-build.finalizedBy buildJni
-clean.dependsOn cleanJni
-
-// Run the main function in test
-task run(type: JavaExec) {
-    ext.libraryPath = "${JNI_BUILD_OUPUT}/Native.dylib"
-
-    dependsOn build
-
-    main = 'Main'
-    classpath = sourceSets.main.runtimeClasspath
-    systemProperties = [ 'nativelib.path': ext.libraryPath ]
-}
+jni.classes = [ 'Native' ]
+jni.jdk = file('/Library/Java/JavaVirtualMachines/jdk1.8.0_171.jdk/Contents/Home')
+jni.makeFileDir = file("${projectDir}/jni")

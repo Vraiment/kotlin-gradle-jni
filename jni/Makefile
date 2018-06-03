@@ -1,9 +1,3 @@
-# This is dirty but should work
-#JVM_HOME = /Library/Java/JavaVirtualMachines/jdk1.8.0_171.jdk/Contents/Home
-
 all:
-	cc -I$(JVM_HOME)/include -I$(JVM_HOME)/include/darwin -c -O2 -o $(OUTPUT)/Native.o Native.c
-	cc -dynamiclib -undefined suppress -flat_namespace  -o $(OUTPUT)/Native.dylib $(OUTPUT)/*.o
-	
-clean:
-	rm -fv $(OUTPUT)/*
+	cc -I$(JDK_DIR)/include -I$(JDK_DIR)/include/darwin -I$(GENERATED_HEADERS_DIR) -c -O2 -o $(OUTPUT_DIR)/Native.o Native.c
+	cc -dynamiclib -undefined suppress -flat_namespace  -o $(OUTPUT_DIR)/Native.dylib $(OUTPUT_DIR)/*.o
